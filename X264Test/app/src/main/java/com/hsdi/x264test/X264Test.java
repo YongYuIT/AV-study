@@ -12,6 +12,12 @@ public class X264Test {
     }
 
     public static final native void CppTest();
+
+    public static final native void x264_test_init(int width, int height);
+
+    public static final native int x264_test_encode(int type, byte[] input, byte[] out);
+
+    public static final native int x264_test_finish();
 }
 
-//javah -d G:\WebRtc\20170627001\A-Video\Android-Proj\X264Test\app\jni -classpath G:\WebRtc\20170627001\A-Video\Android-Proj\X264Test\app\build\intermediates\classes\debug com.hsdi.x264test.X264Test
+//javah -d E:\AV-study\20170703001\AV-study\X264Test\app\jni -classpath E:\AV-study\20170703001\AV-study\X264Test\app\build\intermediates\classes\debug com.hsdi.x264test.X264Test
