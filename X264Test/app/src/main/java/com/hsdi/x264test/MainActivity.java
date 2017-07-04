@@ -112,7 +112,7 @@ public class MainActivity extends Activity {
             NV21: YYYYYYYY  VUVU    =>  YUV420SP
              */
             c_params.setPreviewFormat(ImageFormat.NV21);
-            mCamera.setDisplayOrientation(90);
+            mCamera.setDisplayOrientation(270);
             mCamera.setParameters(c_params);
             //2、视图参数设定
             ViewGroup.LayoutParams t_params = txt_view.getLayoutParams();
