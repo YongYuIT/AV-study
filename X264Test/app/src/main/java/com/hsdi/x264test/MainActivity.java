@@ -10,9 +10,11 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.ViewGroup;
 
+import java.io.Externalizable;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.OutputStream;
 
 public class MainActivity extends Activity {
     //相机方向描述是横向的
@@ -28,8 +30,7 @@ public class MainActivity extends Activity {
     private Camera mCamera = null;
     private static byte[] mInPut;
     private static byte[] mOutPut;
-
-    private RandomAccessFile WFile;
+    private static OutputStream SOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class MainActivity extends Activity {
         }
         try {
             video_file.createNewFile();
-            WFile = new RandomAccessFile(video_file, "rw");
+            SOut = new FileOutputStream(video_file);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,22 +130,21 @@ public class MainActivity extends Activity {
             e.printStackTrace();
             return;
         }
+        mEncodeThread.start();
         mCamera.startPreview();
     }
 
 
     private void onFeame(byte[] data, Camera camera) {
-        int length = X264Test.x264_test_encode(-1, data, mOutPut);
-        try {
-            WFile.write(mOutPut, 0, length);
-        } catch (Exception e) {
-            Log.i("yuyong_p", "x264_test_encode write file failed --> " + e.getMessage());
-        }
-        Log.i("yuyong_p", "x264_test_encode " + length + " --> " + (length * 100f) / (mOutPut.length + 0f));
+        if (isUpdating)
+            return;
+        needUpdate = true;
     }
 
     private void OnViewStop() {
+        mKeepRunning = false;
         X264Test.x264_test_finish();
+        mOutPut.clone();
         if (mCamera != null) {
             Camera tmp = mCamera;
             mCamera = null;
@@ -152,4 +152,26 @@ public class MainActivity extends Activity {
             tmp.release();
         }
     }
+
+    private static boolean needUpdate = false;
+    private static boolean isUpdating = false;
+    private static boolean mKeepRunning = true;
+    private static Thread mEncodeThread = new Thread() {
+        @Override
+        public void run() {
+            while (mKeepRunning) {
+                if (needUpdate) {
+                    isUpdating = true;
+                    int length = X264Test.x264_test_encode(-1, mInPut, mOutPut);
+                    try {
+                        SOut.write(mOutPut, 0, length);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    needUpdate = false;
+                    isUpdating = false;
+                }
+            }
+        }
+    };
 }
