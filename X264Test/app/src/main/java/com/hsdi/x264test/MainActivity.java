@@ -5,16 +5,20 @@ import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.TextureView;
 import android.view.ViewGroup;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class MainActivity extends Activity {
-
     //相机方向描述是横向的
     private static final int width = 720;
     private static final int height = 480;
+    private static final File video_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264");
 
     //SurfaceView和TextureView都是直接继承自View的绘图基本类
     //SurfaceView使用双缓冲，需要频繁重绘画布的使用
@@ -25,6 +29,8 @@ public class MainActivity extends Activity {
     private static byte[] mInPut;
     private static byte[] mOutPut;
 
+    private RandomAccessFile WFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +38,25 @@ public class MainActivity extends Activity {
         X264Test.CppTest();
         txt_view = (TextureView) findViewById(R.id.txt_view);
         txt_view.setSurfaceTextureListener(mTxtViewListener);
+        prepareFile();
+
+    }
+
+    private void prepareFile() {
+        if (video_file.exists()) {
+            File tmp = new File(video_file.getParentFile().getAbsolutePath() + "/fuck");
+            video_file.renameTo(tmp);
+            tmp.delete();
+        }
+        if (video_file.getParentFile().exists()) {
+            video_file.getParentFile().mkdirs();
+        }
+        try {
+            video_file.createNewFile();
+            WFile = new RandomAccessFile(video_file, "rw");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private TextureView.SurfaceTextureListener mTxtViewListener = new TextureView.SurfaceTextureListener() {
@@ -96,7 +121,7 @@ public class MainActivity extends Activity {
             txt_view.setLayoutParams(t_params);
             //3、缓存数据设定
             mInPut = new byte[mCamera.getParameters().getPreviewSize().width * mCamera.getParameters().getPreviewSize().height * 3 / 2];
-            mOutPut = new byte[mInPut.length];
+            mOutPut = new byte[mInPut.length * 4];
             mCamera.addCallbackBuffer(mInPut);
             mCamera.setPreviewCallbackWithBuffer(mCameraCallBack);
             mCamera.setPreviewTexture(suf);
@@ -107,8 +132,15 @@ public class MainActivity extends Activity {
         mCamera.startPreview();
     }
 
+
     private void onFeame(byte[] data, Camera camera) {
-        X264Test.x264_test_encode(-1, data, mOutPut);
+        int length = X264Test.x264_test_encode(-1, data, mOutPut);
+        try {
+            WFile.write(mOutPut, 0, length);
+        } catch (Exception e) {
+            Log.i("yuyong_p", "x264_test_encode write file failed --> " + e.getMessage());
+        }
+        Log.i("yuyong_p", "x264_test_encode " + length + " --> " + (length * 100f) / (mOutPut.length + 0f));
     }
 
     private void OnViewStop() {

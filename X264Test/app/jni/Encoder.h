@@ -12,17 +12,20 @@ public:
 	x264_param_t  params;
 	x264_t*  handler;
 	x264_picture_t frame;
-	x264_nal_t nal;
+	x264_nal_t* nal;
 	Encoder(){
 		//无参构造函数
 		handler = NULL;
-		//frame = NULL;
+		nal = NULL;
 	}
 	~Encoder(){
 		//无参析构函数
 		if (handler != NULL)
 			free(handler);
 		handler = NULL;
+		if (nal != NULL)
+			free(nal);
+		nal = NULL;
 	}
 };
 

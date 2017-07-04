@@ -36,26 +36,21 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1init
 
 JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode
 (JNIEnv * env, jclass j_class, jint type, jbyteArray input, jbyteArray output){
-	x264_picture_t pic_out;
-	int i_data = 0;
-	int nNal = -1;
-	int result = 0;
-	int i = 0, j = 0;
-	int nPix = 0;
 
-	jbyte * Buf = (jbyte*)env->GetByteArrayElements(input, 0);
-	jbyte * h264Buf = (jbyte*)env->GetByteArrayElements(output, 0);
-	unsigned char * pTmpOut = (unsigned char *)h264Buf;
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "start encode %i --> %i", en.params.i_width, en.params.i_height);
+
+	jbyte * input_datas = (jbyte*)env->GetByteArrayElements(input, 0);
+	jbyte * output_datas = (jbyte*)env->GetByteArrayElements(output, 0);
 	int nPicSize = en.params.i_width*en.params.i_height;
 
 	jbyte * y = (jbyte*)en.frame.img.plane[0];
 	jbyte * v = (jbyte*)en.frame.img.plane[1];
 	jbyte * u = (jbyte*)en.frame.img.plane[2];
-	memcpy((jbyte*)en.frame.img.plane[0], Buf, nPicSize);
-	for (i = 0; i < nPicSize / 4; i++)
+	memcpy(y, input_datas, nPicSize);
+	for (int i = 0; i < nPicSize / 4; i++)
 	{
-		*(u + i) = *(Buf + nPicSize + i * 2);
-		*(v + i) = *(Buf + nPicSize + i * 2 + 1);
+		*(u + i) = *(input_datas + nPicSize + i * 2);
+		*(v + i) = *(input_datas + nPicSize + i * 2 + 1);
 	}
 
 	switch (type)
@@ -73,17 +68,30 @@ JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode
 		en.frame.i_type = X264_TYPE_AUTO;
 		break;
 	}
-	x264_nal_t* tmp = &en.nal;
-	if (x264_encoder_encode(en.handler, &(tmp), &nNal, &en.frame, &pic_out) < 0)
+
+	int nNal = -1;
+	x264_picture_t pic_out;
+
+	//x264_encoder_encode 返回 负数 编码失败
+	//x264_encoder_encode 返回 0 编码成功，但是数据被缓存在pic_out里面
+	//x264_encoder_encode 返回 0 编码成功
+	if (x264_encoder_encode(en.handler, &en.nal, &nNal, &en.frame, &pic_out) < 0)
 	{
 		__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode error");
 		return -1;
 	}
-	for (i = 0; i < nNal; i++){
-		memcpy(pTmpOut, (&en.nal)[i].p_payload, (&en.nal)[i].i_payload);
-		pTmpOut += (&en.nal)[i].i_payload;
-		result += (&en.nal)[i].i_payload;
+
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode result %i %i", nNal);
+
+	int result = 0;
+	unsigned char * pTmpOut = (unsigned char *)output_datas;
+	for (int i = 0; i < nNal; i++){
+		memcpy(pTmpOut, (en.nal)[i].p_payload, (en.nal)[i].i_payload);
+		pTmpOut += (en.nal)[i].i_payload;
+		result += (en.nal)[i].i_payload;
 	}
+	env->ReleaseByteArrayElements(input, input_datas, 0);
+	env->ReleaseByteArrayElements(output, output_datas, 0);
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode success %i", result);
 	return result;
 }
