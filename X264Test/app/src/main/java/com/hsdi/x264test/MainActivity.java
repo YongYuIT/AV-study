@@ -6,6 +6,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.TextureView;
 import android.view.ViewGroup;
 
@@ -19,6 +20,12 @@ public class MainActivity extends Activity {
     private static final int width = 720;
     private static final int height = 480;
     private static final File video_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264");
+
+    //帧率控制相关参数
+    private final static int MAX_FPS = 3;
+    private final static int FRAME_PERIOD = (1000 / MAX_FPS);
+    long lastTime = 0;
+    long timeDiff = 0;
 
     //SurfaceView和TextureView都是直接继承自View的绘图基本类
     //SurfaceView使用双缓冲，需要频繁重绘画布的使用
@@ -81,12 +88,24 @@ public class MainActivity extends Activity {
         }
     };
 
+
     private Camera.PreviewCallback mCameraCallBack = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
             if (mCamera != null) {
-                onFeame(data, camera);
                 camera.addCallbackBuffer(data);
+            }
+            //控制帧率-------------start
+            timeDiff = System.currentTimeMillis() - lastTime;
+            if (timeDiff < FRAME_PERIOD) {
+                return;
+            }
+            lastTime = System.currentTimeMillis();
+            //控制帧率-------------end
+            Log.i("yuyong", "有效帧");
+            if (mCamera != null) {
+                Log.i("yuyong_p", "有效帧");
+                onFeame(data, camera);
             }
         }
     };
@@ -120,7 +139,7 @@ public class MainActivity extends Activity {
             txt_view.setLayoutParams(t_params);
             //3、缓存数据设定
             mInPut = new byte[mCamera.getParameters().getPreviewSize().width * mCamera.getParameters().getPreviewSize().height * 3 / 2];
-            mOutPut = new byte[mInPut.length * 4];
+            mOutPut = new byte[mInPut.length];
             mCamera.addCallbackBuffer(mInPut);
             mCamera.setPreviewCallbackWithBuffer(mCameraCallBack);
             mCamera.setPreviewTexture(suf);
@@ -163,8 +182,10 @@ public class MainActivity extends Activity {
                     int length = X264Test.x264_test_encode(-1, mInPut, mOutPut);
                     try {
                         SOut.write(mOutPut, 0, length);
+                        Log.i("yuyong_p", "x264 success --> " + length + "-->" + (length * 100 + 0f) / (mOutPut.length + 0f) + "%");
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Log.i("yuyong", "x264 fail for --> " + e.getMessage());
                     }
                     needUpdate = false;
                     isUpdating = false;

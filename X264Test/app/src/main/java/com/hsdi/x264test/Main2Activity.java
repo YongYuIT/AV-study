@@ -28,7 +28,7 @@ public class Main2Activity extends Activity {
             mPKThread.start();
         }
         if (v.getId() == R.id.btn_datas) {
-            mCPThread.start();
+            mFileThread.start();
         }
     }
 
@@ -48,9 +48,17 @@ public class Main2Activity extends Activity {
             FFmpegTest.ffpmeg_pack_h264_2_mp4(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264", Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.mp4");
         }
     };
-    private Thread mCPThread = new Thread() {
+    private Thread mFileThread = new Thread() {
         @Override
         public void run() {
+            //删除旧数据
+            File old_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.mp4");
+            if (old_file.exists()) {
+                File tmp = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.tmp");
+                old_file.renameTo(tmp);
+                tmp.delete();
+            }
+            //拷贝数据
             File obj_file = new File("/sdcard/test_a.mp3");
             if (obj_file.exists()) {
                 ChangeState();

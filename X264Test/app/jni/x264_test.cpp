@@ -14,15 +14,17 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1init
 	width = _width;
 	height = _height;
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "init start %i , %i", width, height);
-	//设置编码器参数
+	//设置编码器参数-------------------------start
 	x264_param_default(&en.params);
 	en.params.i_log_level = X264_LOG_NONE;
 	en.params.i_width = width;
 	en.params.i_height = height;
 	en.params.rc.i_lookahead = 0;
 	en.params.i_bframe = 0;
-	en.params.i_fps_num = 5;
+	//下面这两个参数决定帧率，fps=i_fps_num/i_fps_den
+	en.params.i_fps_num = 3;
 	en.params.i_fps_den = 1;
+	//设置编码器参数-------------------------end
 	//寻找可用编码器
 	if ((en.handler = x264_encoder_open(&en.params)) == NULL){
 		__android_log_print(ANDROID_LOG_INFO, "yuyong", "init fail");
