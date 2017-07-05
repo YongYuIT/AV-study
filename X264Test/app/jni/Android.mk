@@ -11,7 +11,6 @@ LOCAL_SRC_FILES := test.cpp \
                    x264_test.cpp \
                    Encoder.cpp
 
-
 LOCAL_C_INCLUDES += G:\WebRtc\FFmpeg-SDK\arm\include
 LOCAL_LDLIBS +=  -llog -ldl -lz
 LOCAL_SHARED_LIBRARIES := x264

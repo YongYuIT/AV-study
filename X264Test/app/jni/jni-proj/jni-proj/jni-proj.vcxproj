@@ -66,11 +66,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\com_hsdi_x264test_FFmpegTest.h" />
     <ClInclude Include="..\..\com_hsdi_x264test_X264Test.h" />
     <ClInclude Include="..\..\Encoder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Encoder.cpp" />
+    <ClCompile Include="..\..\ffpmeg_test.cpp" />
     <ClCompile Include="..\..\test.cpp" />
     <ClCompile Include="..\..\x264_test.cpp" />
   </ItemGroup>

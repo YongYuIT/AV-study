@@ -6,11 +6,9 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.ViewGroup;
 
-import java.io.Externalizable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
