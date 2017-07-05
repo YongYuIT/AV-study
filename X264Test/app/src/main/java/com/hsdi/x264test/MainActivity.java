@@ -151,7 +151,6 @@ public class MainActivity extends Activity {
         mCamera.startPreview();
     }
 
-
     private void onFeame(byte[] data, Camera camera) {
         if (isUpdating)
             return;
