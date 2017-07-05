@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Encoder.cpp" />
-    <ClCompile Include="..\..\ffpmeg_test.cpp" />
+    <ClCompile Include="..\..\ffmpeg_test.cpp" />
     <ClCompile Include="..\..\test.cpp" />
     <ClCompile Include="..\..\x264_test.cpp" />
   </ItemGroup>
