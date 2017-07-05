@@ -7,10 +7,19 @@
     tools:context="com.hsdi.x264test.Main2Activity">
 
     <Button
-        android:id="@+id/btn_package"
+        android:id="@+id/btn_datas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onClick"
-        android:text="PACKAGE" />
+        android:text="DATAS" />
+
+    <Button
+        android:id="@+id/btn_package"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:onClick="onClick"
+        android:text="PACKAGE"
+        android:textColor="#ffffffff" />
 
 </LinearLayout>

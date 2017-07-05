@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
     private void onViewReady(SurfaceTexture suf) {
         X264Test.x264_test_init(width, height);
         try {
-            mCamera = Camera.open(1);
+            mCamera = Camera.open(0);
         } catch (Exception e) {
             mCamera = null;
             return;
@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
             NV21: YYYYYYYY  VUVU    =>  YUV420SP
              */
             c_params.setPreviewFormat(ImageFormat.NV21);
-            mCamera.setDisplayOrientation(270);
+            mCamera.setDisplayOrientation(90);
             mCamera.setParameters(c_params);
             //2、视图参数设定
             ViewGroup.LayoutParams t_params = txt_view.getLayoutParams();

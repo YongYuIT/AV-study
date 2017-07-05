@@ -17,5 +17,4 @@ public class FFmpegTest {
 }
 
 //javah -d E:\AV-study\20170705001\AV-study\X264Test\app\jni -classpath E:\AV-study\20170705001\AV-study\X264Test\app\build\intermediates\classes\debug com.hsdi.x264test.FFmpegTest
-//adb push test_a.mp3 /sdcard/
 //adb pull /sdcard/video_test.mp4 .
