@@ -11,18 +11,16 @@ import android.view.TextureView;
 import android.view.ViewGroup;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
-public class MainActivity extends Activity {
+public class Main3Activity extends Activity {
     //相机方向描述是横向的
     private static final int width = 720;
     private static final int height = 480;
     private static final File video_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264");
 
     //帧率控制相关参数
-    private final static int MAX_FPS = 3;
+    private final static int MAX_FPS = 10;
     private final static int FRAME_PERIOD = (1000 / MAX_FPS);
     long lastTime = 0;
     long timeDiff = 0;
@@ -34,8 +32,6 @@ public class MainActivity extends Activity {
     private TextureView txt_view;
     private Camera mCamera = null;
     private static byte[] mInPut;
-    private static byte[] mOutPut;
-    private static OutputStream SOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +55,6 @@ public class MainActivity extends Activity {
         }
         try {
             video_file.createNewFile();
-            SOut = new FileOutputStream(video_file);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,7 +133,6 @@ public class MainActivity extends Activity {
             txt_view.setLayoutParams(t_params);
             //3、缓存数据设定
             mInPut = new byte[mCamera.getParameters().getPreviewSize().width * mCamera.getParameters().getPreviewSize().height * 3 / 2];
-            mOutPut = new byte[mInPut.length * 10];
             mCamera.addCallbackBuffer(mInPut);
             mCamera.setPreviewCallbackWithBuffer(mCameraCallBack);
             mCamera.setPreviewTexture(suf);
@@ -159,7 +153,6 @@ public class MainActivity extends Activity {
     private void OnViewStop() {
         mKeepRunning = false;
         X264Test.x264_test_finish();
-        mOutPut.clone();
         if (mCamera != null) {
             Camera tmp = mCamera;
             mCamera = null;
@@ -177,16 +170,9 @@ public class MainActivity extends Activity {
             while (mKeepRunning) {
                 if (needUpdate) {
                     isUpdating = true;
-                    int length = X264Test.x264_test_encode(-1, mInPut, mOutPut);
-                    try {
-                        SOut.write(mOutPut, 0, length);
-                        Log.i("yuyong_p", "x264 success --> " + length + "-->" + (length * 100 + 0f) / (mOutPut.length + 0f) + "%");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.i("yuyong", "x264 fail for --> " + e.getMessage());
-                    }
-                    needUpdate = false;
+                    X264Test.x264_test_encode(-1, mInPut);
                     isUpdating = false;
+                    needUpdate = false;
                 }
             }
         }

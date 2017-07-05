@@ -32,23 +32,15 @@ extern "C" {
 	 * Method:    x264_test_encode
 	 * Signature: (I[B[B)I
 	 */
-	JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode__I_3B_3B
+	JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode
 		(JNIEnv *, jclass, jint, jbyteArray, jbyteArray);
 
 	/*
 	 * Class:     com_hsdi_x264test_X264Test
-	 * Method:    x264_test_encode
-	 * Signature: (I[B)V
-	 */
-	JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode__I_3B
-		(JNIEnv *, jclass, jint, jbyteArray);
-
-	/*
-	 * Class:     com_hsdi_x264test_X264Test
 	 * Method:    x264_test_finish
-	 * Signature: ()V
+	 * Signature: ()I
 	 */
-	JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1finish
+	JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1finish
 		(JNIEnv *, jclass);
 
 #ifdef __cplusplus

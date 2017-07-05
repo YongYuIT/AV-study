@@ -1,13 +1,16 @@
 #include"com_hsdi_x264test_X264Test.h"
 #include<iostream>
+#include<fstream>
 #include<android\log.h>
 #include"Encoder.h"
+#include<stdio.h>
 using namespace std;
 
 static int width;
 static int height;
 
 Encoder en;
+ofstream file_out;
 
 JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1init
 (JNIEnv *, jclass, jint _width, jint _height){
@@ -22,7 +25,7 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1init
 	en.params.rc.i_lookahead = 0;
 	en.params.i_bframe = 0;
 	//下面这两个参数决定帧率，fps=i_fps_num/i_fps_den
-	en.params.i_fps_num = 3;
+	en.params.i_fps_num = 10;
 	en.params.i_fps_den = 1;
 	//设置编码器参数-------------------------end
 	//寻找可用编码器
@@ -32,11 +35,16 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1init
 	}
 	//创建帧数据
 	x264_picture_alloc(&en.frame, X264_CSP_I420, en.params.i_width, en.params.i_height);
+
+	//打开文件流（这个与纯Java写文件方式冲突，如果需要纯Java写文件，这步操作要注释）
+	//out:为输出而打开；app:文件尾追加；binary:二进制
+	file_out.open("/sdcard/video_test.h264", ios::out | ios::app | ios::binary);
+
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "init success %i --> %i", en.params.i_width, en.params.i_height);
 	return;
 }
 
-JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode
+JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode__I_3B_3B
 (JNIEnv * env, jclass j_class, jint type, jbyteArray input, jbyteArray output){
 
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "start encode %i --> %i", en.params.i_width, en.params.i_height);
@@ -98,9 +106,77 @@ JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode
 	return result;
 }
 
-JNIEXPORT jint JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1finish
+JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode__I_3B
+(JNIEnv * env, jclass j_class, jint type, jbyteArray input){
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "start encode %i --> %i", en.params.i_width, en.params.i_height);
+
+	jbyte * input_datas = (jbyte*)env->GetByteArrayElements(input, 0);
+	int nPicSize = en.params.i_width*en.params.i_height;
+
+	jbyte * y = (jbyte*)en.frame.img.plane[0];
+	jbyte * v = (jbyte*)en.frame.img.plane[1];
+	jbyte * u = (jbyte*)en.frame.img.plane[2];
+	memcpy(y, input_datas, nPicSize);
+	for (int i = 0; i < nPicSize / 4; i++)
+	{
+		*(u + i) = *(input_datas + nPicSize + i * 2);
+		*(v + i) = *(input_datas + nPicSize + i * 2 + 1);
+	}
+
+	switch (type)
+	{
+	case 0:
+		en.frame.i_type = X264_TYPE_P;
+		break;
+	case 1:
+		en.frame.i_type = X264_TYPE_IDR;
+		break;
+	case 2:
+		en.frame.i_type = X264_TYPE_I;
+		break;
+	default:
+		en.frame.i_type = X264_TYPE_AUTO;
+		break;
+	}
+
+	int nNal = -1;
+	x264_picture_t pic_out;
+
+	//x264_encoder_encode 返回 负数 编码失败
+	//x264_encoder_encode 返回 0 编码成功，但是数据被缓存在pic_out里面
+	//x264_encoder_encode 返回 0 编码成功
+	if (x264_encoder_encode(en.handler, &en.nal, &nNal, &en.frame, &pic_out) < 0)
+	{
+		__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode error");
+		return;
+	}
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode result %i %i", nNal);
+
+	unsigned char * out_put = (unsigned char *)malloc(sizeof(jbyte)*env->GetArrayLength(input));
+	unsigned char *pTmpOut = out_put;
+	int result = 0;
+	for (int i = 0; i < nNal; i++){
+		memcpy(pTmpOut, (en.nal)[i].p_payload, (en.nal)[i].i_payload);
+		pTmpOut += (en.nal)[i].i_payload;
+		result += (en.nal)[i].i_payload;
+	}
+	pTmpOut = NULL;
+	//数据输出
+	file_out.write((char *)out_put, sizeof(unsigned char)*result);
+
+	//参数释放
+	env->ReleaseByteArrayElements(input, input_datas, 0);
+	free(out_put);
+	out_put = NULL;
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode success %i", result);
+	return;
+}
+
+JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1finish
 (JNIEnv *, jclass){
 	x264_picture_clean(&en.frame);
 	x264_encoder_close(en.handler);
-	return 0;
+	//（这个与纯Java写文件方式冲突，如果需要纯Java写文件，这步操作要注释）
+	file_out.close();
+	return;
 }
