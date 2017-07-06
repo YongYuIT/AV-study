@@ -12,11 +12,12 @@ import android.view.ViewGroup;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class Main3Activity extends Activity {
     //相机方向描述是横向的
-    private static final int width = 720;
-    private static final int height = 480;
+    private static final int width = 480;
+    private static final int height = 320;
     private static final File video_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264");
 
     //帧率控制相关参数
@@ -98,7 +99,7 @@ public class Main3Activity extends Activity {
             lastTime = System.currentTimeMillis();
             //控制帧率-------------end
             if (mCamera != null) {
-                Log.i("yuyong_p", "有效帧");
+                Log.i("yuyong_p", new Date().getSeconds() + "-->有效帧");
                 onFeame(data, camera);
             }
         }

@@ -14,15 +14,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 public class MainActivity extends Activity {
     //相机方向描述是横向的
-    private static final int width = 720;
-    private static final int height = 480;
+    private static final int width = 480;
+    private static final int height = 320;
     private static final File video_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264");
 
     //帧率控制相关参数
-    private final static int MAX_FPS = 5;
+    private final static int MAX_FPS = 10;
     private final static int FRAME_PERIOD = (1000 / MAX_FPS);
     long lastTime = 0;
     long timeDiff = 0;
@@ -120,6 +121,7 @@ public class MainActivity extends Activity {
         try {
             //1、相机参数设定
             Camera.Parameters c_params = mCamera.getParameters();
+            List<Camera.Size> sizes = c_params.getSupportedPreviewSizes();
             c_params.setPreviewSize(width, height);
             c_params.setPictureSize(width, height);
             /*
