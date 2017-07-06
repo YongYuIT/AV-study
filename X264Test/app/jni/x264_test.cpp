@@ -25,8 +25,13 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1init
 	en.params.rc.i_lookahead = 0;
 	en.params.i_bframe = 0;
 	//下面这两个参数决定帧率，fps=i_fps_num/i_fps_den
-	en.params.i_fps_num =5;
+	en.params.i_fps_num = 5;
 	en.params.i_fps_den = 1;
+	//常见的码率控制模式有三种：ABR（平均码率）、CQP（恒定质量）、CRF（恒定码率），默认的方法是CRF
+	//这里尝试恒定码率
+	en.params.rc.i_rc_method = X264_RC_CRF;
+	en.params.rc.f_rf_constant = 20;
+	en.params.rc.f_rf_constant_max = 25;
 	//设置编码器参数-------------------------end
 	//尝试打开编码器
 	if ((en.handler = x264_encoder_open(&en.params)) == NULL){
@@ -160,7 +165,7 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode__I_3B
 		__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode error");
 		return;
 	}
-	__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode result %i %i", nNal);
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode result %i", nNal);
 
 	//数据输出
 	unsigned char * out_put = (unsigned char *)malloc(sizeof(jbyte)*env->GetArrayLength(input));
