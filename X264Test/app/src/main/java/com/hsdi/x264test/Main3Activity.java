@@ -161,6 +161,7 @@ public class Main3Activity extends Activity {
         }
     }
 
+	
     private static boolean needUpdate = false;
     private static boolean isUpdating = false;
     private static boolean mKeepRunning = true;
