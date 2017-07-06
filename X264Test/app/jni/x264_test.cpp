@@ -28,7 +28,7 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1init
 	en.params.i_fps_num = 10;
 	en.params.i_fps_den = 1;
 	//设置编码器参数-------------------------end
-	//寻找可用编码器
+	//尝试打开编码器
 	if ((en.handler = x264_encoder_open(&en.params)) == NULL){
 		__android_log_print(ANDROID_LOG_INFO, "yuyong", "init fail");
 		return;
