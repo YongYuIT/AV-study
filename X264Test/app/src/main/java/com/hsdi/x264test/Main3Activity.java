@@ -20,7 +20,7 @@ public class Main3Activity extends Activity {
     private static final File video_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264");
 
     //帧率控制相关参数
-    private final static int MAX_FPS = 10;
+    private final static int MAX_FPS = 5;
     private final static int FRAME_PERIOD = (1000 / MAX_FPS);
     long lastTime = 0;
     long timeDiff = 0;
@@ -161,7 +161,7 @@ public class Main3Activity extends Activity {
         }
     }
 
-	
+
     private static boolean needUpdate = false;
     private static boolean isUpdating = false;
     private static boolean mKeepRunning = true;

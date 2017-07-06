@@ -76,6 +76,10 @@
     <ClCompile Include="..\..\test.cpp" />
     <ClCompile Include="..\..\x264_test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Android.mk" />
+    <None Include="..\..\Application.mk" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

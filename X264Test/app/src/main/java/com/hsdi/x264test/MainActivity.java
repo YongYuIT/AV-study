@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
     private static final File video_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264");
 
     //帧率控制相关参数
-    private final static int MAX_FPS = 3;
+    private final static int MAX_FPS = 5;
     private final static int FRAME_PERIOD = (1000 / MAX_FPS);
     long lastTime = 0;
     long timeDiff = 0;
@@ -123,10 +123,10 @@ public class MainActivity extends Activity {
             c_params.setPreviewSize(width, height);
             c_params.setPictureSize(width, height);
             /*
-            I420: YYYYYYYY  UUVV    =>  YUV420P
-            YV12: YYYYYYYY  VVUU    =>  YUV420P
-            NV12: YYYYYYYY  UVUV    =>  YUV420SP
-            NV21: YYYYYYYY  VUVU    =>  YUV420SP
+            I420: YYYYYYYY...UUVV...    =>  YUV420P
+            YV12: YYYYYYYY...VVUU...    =>  YUV420P
+            NV12: YYYYYYYY...UVUV...    =>  YUV420SP
+            NV21: YYYYYYYY...VUVU...    =>  YUV420SP
              */
             c_params.setPreviewFormat(ImageFormat.NV21);
             mCamera.setDisplayOrientation(90);

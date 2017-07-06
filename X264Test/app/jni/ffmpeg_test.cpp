@@ -14,11 +14,11 @@ JNIEXPORT jboolean JNICALL Java_com_hsdi_x264test_FFmpegTest_ffpmeg_1pack_1h264_
 	int audioindex_a = -1, audioindex_out = -1;
 	int frame_index = 0;
 	int64_t cur_pts_v = 0, cur_pts_a = 0;
-  
-	const char *in_filename_v = env->GetStringUTFChars(input_path, 0);  
+
+	const char *in_filename_v = env->GetStringUTFChars(input_path, 0);
 	const char *in_filename_a = "/sdcard/test_a.mp3";
 
-	const char *out_filename = env->GetStringUTFChars(output_path, 0);;//Output file URL  
+	const char *out_filename = env->GetStringUTFChars(output_path, 0);//Output file URL  
 	av_register_all();
 	//Input  
 	if ((ret = avformat_open_input(&ifmt_ctx_v, in_filename_v, 0, 0)) < 0) {
