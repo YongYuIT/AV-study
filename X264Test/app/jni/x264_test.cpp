@@ -157,8 +157,8 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode__I_3B
 	x264_picture_t pic_out;
 	/*
 	x264_encoder_encode 返回 负数 编码失败
-	x264_encoder_encode 返回 0 编码成功，但是数据被缓存在pic_out里面
-	x264_encoder_encode 返回 0 编码成功
+	x264_encoder_encode 返回 0    编码成功，但是数据被缓存在pic_out里面
+	x264_encoder_encode 返回 0    编码成功
 	*/
 	if (x264_encoder_encode(en.handler, &en.nal, &nNal, &en.frame, &pic_out) < 0)
 	{
@@ -168,6 +168,20 @@ JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1encode__I_3B
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "encode result %i", nNal);
 
 	//数据输出
+	//x264_nal_t结构体用于存储x264_encoder_encode函数编码完成之后的数据
+	/*
+	typedef struct x264_nal_t
+	{
+	int i_ref_idc;
+	int i_type;
+	int b_long_startcode;
+	int i_first_mb;
+	int i_last_mb;
+	int i_payload;     //编码数据域
+	uint8_t *p_payload;//编码数据长度
+	int i_padding;
+	} x264_nal_t;
+	*/
 	unsigned char * out_put = (unsigned char *)malloc(sizeof(jbyte)*env->GetArrayLength(input));
 	unsigned char *pTmpOut = out_put;
 	int result = 0;
