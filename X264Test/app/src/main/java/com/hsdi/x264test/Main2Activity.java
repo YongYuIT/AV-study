@@ -45,7 +45,8 @@ public class Main2Activity extends Activity {
     private Thread mPKThread = new Thread() {
         @Override
         public void run() {
-            FFmpegTest.ffpmeg_pack_h264_2_mp4(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264", Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.mp4");
+            //FFmpegTest.ffmpeg_test_AV_package(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264", Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.mp4");
+            FFmpegTest.ffmpeg_test_V_package(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264", Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.mp4");
         }
     };
     private Thread mFileThread = new Thread() {

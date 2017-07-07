@@ -21,18 +21,10 @@ extern "C" {
 
 	/*
 	 * Class:     com_hsdi_x264test_FFmpegTest
-	 * Method:    ffmpeg_test_AV_package
+	 * Method:    ffpmeg_pack_h264_2_mp4
 	 * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
 	 */
-	JNIEXPORT jboolean JNICALL Java_com_hsdi_x264test_FFmpegTest_ffmpeg_1test_1AV_1package
-		(JNIEnv *, jclass, jstring, jstring);
-
-	/*
-	 * Class:     com_hsdi_x264test_FFmpegTest
-	 * Method:    ffmpeg_test_V_package
-	 * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
-	 */
-	JNIEXPORT jboolean JNICALL Java_com_hsdi_x264test_FFmpegTest_ffmpeg_1test_1V_1package
+	JNIEXPORT jboolean JNICALL Java_com_hsdi_x264test_FFmpegTest_ffpmeg_1pack_1h264_12_1mp4
 		(JNIEnv *, jclass, jstring, jstring);
 
 #ifdef __cplusplus

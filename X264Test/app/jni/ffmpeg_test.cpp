@@ -3,7 +3,7 @@
 #include<android\log.h>
 using namespace std;
 
-JNIEXPORT jboolean JNICALL Java_com_hsdi_x264test_FFmpegTest_ffpmeg_1pack_1h264_12_1mp4
+JNIEXPORT jboolean JNICALL Java_com_hsdi_x264test_FFmpegTest_ffmpeg_1test_1AV_1package
 (JNIEnv *env, jclass j_class, jstring input_path, jstring output_path){
 	AVOutputFormat *ofmt = NULL;
 	//Input AVFormatContext and Output AVFormatContext  
@@ -246,4 +246,146 @@ end:
 		return -1;
 	}
 	return 0;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_hsdi_x264test_FFmpegTest_ffmpeg_1test_1V_1package
+(JNIEnv *env, jclass j_class, jstring input_path, jstring output_path)
+{
+	const char *input_file_path = env->GetStringUTFChars(input_path, 0);
+	const char *output_file_path = env->GetStringUTFChars(output_path, 0);
+
+	av_register_all();
+
+	AVFormatContext *input_ctx = NULL;
+	if (avformat_open_input(&input_ctx, input_file_path, 0, 0) < 0){
+		//打开输入文件失败
+		__android_log_print(ANDROID_LOG_INFO, "yuyong", "open input file failed");
+		return false;
+	}
+
+	if (avformat_find_stream_info(input_ctx, 0) < 0){
+		//获取输入文件流失败
+		__android_log_print(ANDROID_LOG_INFO, "yuyong", "open input stream failed");
+		return false;
+	}
+	av_dump_format(input_ctx, 0, input_file_path, 0);
+
+	AVFormatContext *output_ctx = NULL;
+	avformat_alloc_output_context2(&output_ctx, NULL, NULL, output_file_path);
+	if (output_ctx == NULL){
+		//打开输出文件失败
+		__android_log_print(ANDROID_LOG_INFO, "yuyong", "open output file failed");
+		return false;
+	}
+	AVOutputFormat *output_fmt = NULL;
+	output_fmt = output_ctx->oformat;
+
+	int total_out_index = -1;
+	int index = -1;
+	for (int i = 0; i < input_ctx->nb_streams; i++){
+		AVStream *instream = input_ctx->streams[i];
+		//如果输入流类型不是视频类型，跳过
+		if (instream->codec->codec_type != AVMEDIA_TYPE_VIDEO)
+		{
+			continue;
+		}
+		AVStream *outstream = avformat_new_stream(output_ctx, instream->codec->codec);
+		index = i;
+		if (outstream == NULL)
+		{
+			//获取输出流失败
+			__android_log_print(ANDROID_LOG_INFO, "yuyong", "open output stream failed");
+			return false;
+		}
+		total_out_index = outstream->index;
+		if (avcodec_copy_context(outstream->codec, instream->codec) < 0){
+			__android_log_print(ANDROID_LOG_INFO, "yuyong", "codec info copy failed");
+			return false;
+		}
+
+		outstream->codec->codec_tag = 0;
+		if (output_ctx->oformat->flags & AVFMT_GLOBALHEADER)
+			outstream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+		break;
+
+	}
+
+	av_dump_format(output_ctx, 0, output_file_path, 1);
+
+	if (!(output_fmt->flags & AVFMT_NOFILE)) {
+		if (avio_open(&output_ctx->pb, output_file_path, AVIO_FLAG_WRITE) < 0) {
+			//打开输出文件失败
+			__android_log_print(ANDROID_LOG_INFO, "yuyong", "open output file failed");
+			return false;
+		}
+	}
+
+	//写文件头失败
+	if (avformat_write_header(output_ctx, NULL) < 0) {
+		__android_log_print(ANDROID_LOG_INFO, "yuyong", "write head data failed");
+		return false;
+	}
+
+	//读取H.264码流中的SPS和PPS信息
+	AVBitStreamFilterContext* h264bsfc = av_bitstream_filter_init("h264_mp4toannexb");
+
+	AVPacket pkt;
+	int frame_index = 0;
+	int64_t cur_pts_v = 0;
+	while (true) {
+		AVStream *in_stream;
+		AVStream *out_stream;
+		//生成打包数据
+		if (av_read_frame(input_ctx, &pkt) >= 0){
+			do{
+				in_stream = input_ctx->streams[pkt.stream_index];
+				out_stream = output_ctx->streams[total_out_index];
+				if (pkt.stream_index == total_out_index){
+					if (pkt.pts == AV_NOPTS_VALUE){
+						AVRational time_base1 = in_stream->time_base;
+						int64_t calc_duration = (double)AV_TIME_BASE / av_q2d(in_stream->r_frame_rate);
+						pkt.pts = (double)(frame_index*calc_duration) / (double)(av_q2d(time_base1)*AV_TIME_BASE);
+						pkt.dts = pkt.pts;
+						pkt.duration = (double)calc_duration / (double)(av_q2d(time_base1)*AV_TIME_BASE);
+						frame_index++;
+					}
+					cur_pts_v = pkt.pts;
+					break;
+				}
+			} while (av_read_frame(input_ctx, &pkt) >= 0);
+		}
+		else{
+			break;
+		}
+
+		av_bitstream_filter_filter(h264bsfc, in_stream->codec, NULL, &pkt.data, &pkt.size, pkt.data, pkt.size, 0);
+
+		pkt.pts = av_rescale_q_rnd(pkt.pts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+		pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base, (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+		pkt.duration = av_rescale_q(pkt.duration, in_stream->time_base, out_stream->time_base);
+		pkt.pos = -1;
+		pkt.stream_index = total_out_index;
+		__android_log_print(ANDROID_LOG_INFO, "yuyong", "write a pkt --> size:%5d --> pts:%lld", pkt.size, pkt.pts);
+		if (av_interleaved_write_frame(output_ctx, &pkt) < 0) {
+			__android_log_print(ANDROID_LOG_INFO, "yuyong", "pack failed");
+			break;
+		}
+		av_free_packet(&pkt);
+	}
+
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "pack success");
+
+	av_write_trailer(output_ctx);
+	av_bitstream_filter_close(h264bsfc);
+
+	avformat_close_input(&input_ctx);
+	if (output_ctx && !(output_ctx->flags & AVFMT_NOFILE))
+		avio_close(output_ctx->pb);
+	avformat_free_context(output_ctx);
+
+
+	env->ReleaseStringUTFChars(input_path, input_file_path);
+	env->ReleaseStringUTFChars(output_path, output_file_path);
+
+	return true;
 }

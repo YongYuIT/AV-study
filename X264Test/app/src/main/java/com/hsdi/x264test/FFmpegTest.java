@@ -13,8 +13,10 @@ public class FFmpegTest {
         System.loadLibrary("com_thinking_ffmpeg");
     }
 
-    public static final native boolean ffpmeg_pack_h264_2_mp4(String file_path, String out_put_file_path);
+    public static final native boolean ffmpeg_test_AV_package(String file_path, String out_put_file_path);
+
+    public static final native boolean ffmpeg_test_V_package(String file_path, String out_put_file_path);
 }
 
-//javah -d E:\AV-study\20170705001\AV-study\X264Test\app\jni -classpath E:\AV-study\20170705001\AV-study\X264Test\app\build\intermediates\classes\debug com.hsdi.x264test.FFmpegTest
+//javah -d E:\AV-study\20170706001\AV-study\X264Test\app\jni -classpath E:\AV-study\20170706001\AV-study\X264Test\app\build\intermediates\classes\debug com.hsdi.x264test.FFmpegTest
 //adb pull /sdcard/video_test.mp4 .
