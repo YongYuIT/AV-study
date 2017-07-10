@@ -12,18 +12,20 @@ import android.view.ViewGroup;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
 
-//C/CPP编码，C/CPP保存数据，无YUV帧缓存
-public class Main3Activity extends Activity {
+//C/CPP编码，C/CPP保存数据，有YUV帧缓存
+public class Main4Activity extends Activity {
     //相机方向描述是横向的
     private static final int width = 800;
     private static final int height = 480;
     private static final File video_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "video_test.h264");
 
     //帧率控制相关参数
-    private final static int MAX_FPS = 5;
+    private final static int MAX_FPS = 10;
     private final static int FRAME_PERIOD = (1000 / MAX_FPS);
     long lastTime = 0;
     long timeDiff = 0;
@@ -34,7 +36,10 @@ public class Main3Activity extends Activity {
     //相机视频类应用使用TextureView
     private TextureView txt_view;
     private Camera mCamera = null;
+
     private static byte[] mInPut;
+    //缓冲数据域
+    private static Stack<byte[]> mFrameCache = new Stack<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,12 @@ public class Main3Activity extends Activity {
         txt_view = (TextureView) findViewById(R.id.txt_view);
         txt_view.setSurfaceTextureListener(mTxtViewListener);
         prepareFile();
+    }
 
+    @Override
+    protected void onDestroy() {
+        mFrameCache.clear();
+        super.onDestroy();
     }
 
     private void prepareFile() {
@@ -101,7 +111,6 @@ public class Main3Activity extends Activity {
             lastTime = System.currentTimeMillis();
             //控制帧率-------------end
             if (mCamera != null) {
-                Log.i("yuyong_p", new Date().getSeconds() + "-->有效帧");
                 onFeame(data, camera);
             }
         }
@@ -110,7 +119,7 @@ public class Main3Activity extends Activity {
     private void onViewReady(SurfaceTexture suf) {
         X264Test.x264_test_init(width, height, MAX_FPS);
         try {
-            mCamera = Camera.open(0);
+            mCamera = Camera.open(1);
         } catch (Exception e) {
             mCamera = null;
             return;
@@ -128,7 +137,7 @@ public class Main3Activity extends Activity {
             NV21: YYYYYYYY  VUVU    =>  YUV420SP
              */
             c_params.setPreviewFormat(ImageFormat.NV21);
-            mCamera.setDisplayOrientation(90);
+            mCamera.setDisplayOrientation(270);
             mCamera.setParameters(c_params);
             //2、视图参数设定
             ViewGroup.LayoutParams t_params = txt_view.getLayoutParams();
@@ -149,11 +158,15 @@ public class Main3Activity extends Activity {
     }
 
     private void onFeame(byte[] data, Camera camera) {
-        if (isUpdating) {
-            Log.i("yuyong_p", "忙，丢弃");
-            return;
+        byte[] tmp = new byte[data.length];
+        System.arraycopy(data, 0, tmp, 0, data.length);
+        if (mFrameCache.size() > MAX_FPS * 2) {
+            Log.e("yuyong_p", "忙，丢弃");
+        } else {
+            Log.e("yuyong_p", new Date().getSeconds() + "-->有效帧-->" + (mFrameCache.size() * 100 + 0f) / (MAX_FPS * 2 + 0f) + "%");
+            mFrameCache.push(tmp);
         }
-        needUpdate = true;
+        tmp = null;
     }
 
     private void OnViewStop() {
@@ -167,19 +180,16 @@ public class Main3Activity extends Activity {
         }
     }
 
-
-    private static boolean needUpdate = false;
-    private static boolean isUpdating = false;
     private static boolean mKeepRunning = true;
     private static Thread mEncodeThread = new Thread() {
         @Override
         public void run() {
             while (mKeepRunning) {
-                if (needUpdate) {
-                    isUpdating = true;
-                    X264Test.x264_test_encode(-1, mInPut);
-                    isUpdating = false;
-                    needUpdate = false;
+                if (!mFrameCache.empty()) {
+                    byte[] tmp = mFrameCache.pop();
+                    X264Test.x264_test_encode(-1, tmp);
+                    tmp = null;
+                    System.gc();
                 }
             }
         }

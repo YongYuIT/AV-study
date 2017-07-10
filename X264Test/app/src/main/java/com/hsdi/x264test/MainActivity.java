@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+//C/CPP编码，Java保存数据
 public class MainActivity extends Activity {
     //相机方向描述是横向的
     private static final int width = 480;
@@ -111,7 +112,7 @@ public class MainActivity extends Activity {
     };
 
     private void onViewReady(SurfaceTexture suf) {
-        X264Test.x264_test_init(width, height);
+        X264Test.x264_test_init(width, height, MAX_FPS);
         try {
             mCamera = Camera.open(0);
         } catch (Exception e) {

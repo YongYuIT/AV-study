@@ -22,10 +22,10 @@ extern "C" {
 	/*
 	 * Class:     com_hsdi_x264test_X264Test
 	 * Method:    x264_test_init
-	 * Signature: (III)V
+	 * Signature: (II)V
 	 */
 	JNIEXPORT void JNICALL Java_com_hsdi_x264test_X264Test_x264_1test_1init
-		(JNIEnv *, jclass, jint, jint, jint);
+		(JNIEnv *, jclass, jint, jint);
 
 	/*
 	 * Class:     com_hsdi_x264test_X264Test
