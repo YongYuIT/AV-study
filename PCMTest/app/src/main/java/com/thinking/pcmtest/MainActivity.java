@@ -5,9 +5,9 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 
 import java.io.File;
@@ -141,8 +141,6 @@ class PCMTool {
             } catch (Exception e) {
                 break;
             }
-            System.out.write(pcmCache, 0, byteread);
-            System.out.flush();
             audioTrack.write(pcmCache, 0, pcmCache.length);
         }
 
