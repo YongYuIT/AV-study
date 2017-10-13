@@ -8,6 +8,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import java.io.File;
@@ -105,6 +106,7 @@ class PCMTool {
 
         //获取符合系统要求的最小缓冲区
         pcmCache = new byte[AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat)];
+        Log.i("yuyong", "pcmCache-->" + pcmCache.length);
         audioRecord = new AudioRecord(audioSource, sampleRateInHz, channelConfig, audioFormat, pcmCache.length);
         audioRecord.startRecording();
 
