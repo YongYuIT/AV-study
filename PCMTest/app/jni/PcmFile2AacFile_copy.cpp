@@ -102,7 +102,6 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFil
 	//getchar();
 
 	result = env->NewStringUTF((pcm_path + ".aac").c_str());
-
 	env->ReleaseStringUTFChars(pcm_file_path, pcm_path.c_str());
 	return result;
 }
