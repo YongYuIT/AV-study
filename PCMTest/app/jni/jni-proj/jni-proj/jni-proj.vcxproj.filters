@@ -18,6 +18,9 @@
     <ClCompile Include="..\..\test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\PcmFile2AacFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\com_thinking_pcmtest_PCM2AACTools.h">

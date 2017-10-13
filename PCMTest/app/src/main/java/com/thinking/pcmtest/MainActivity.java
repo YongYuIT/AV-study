@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
             PCMTool.stopRecord();
         } else if (view.getId() == R.id.btn_play) {
             PCMTool.play();
+        } else if (view.getId() == R.id.btn_pcm2aac) {
+            PCMTool.doConvert();
         }
     }
 }
@@ -69,6 +71,15 @@ class PCMTool {
             @Override
             public void run() {
                 playPCM();
+            }
+        });
+    }
+
+    public static void doConvert() {
+        pool.submit(new Runnable() {
+            @Override
+            public void run() {
+                PCM2AACTools.PcmFileToAccFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm");
             }
         });
     }
