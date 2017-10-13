@@ -42,7 +42,9 @@ class PCMTool {
     //录音参数设置-----------------------start
     private final static int audioSource = MediaRecorder.AudioSource.MIC;//设置录音源为麦克风
     private final static int sampleRateInHz = 44100;//设置采样率，44100是比较常见的标准；某些设备可能还支持22050，16000，11025
+    //private final static int sampleRateInHz = 11025;//设置采样率，44100是比较常见的标准；某些设备可能还支持22050，16000，11025
     private final static int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_STEREO;//设置音道数，CHANNEL_CONFIGURATION_STEREO为立体音（双音道）
+    //private final static int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;//设置音道数，CHANNEL_CONFIGURATION_STEREO为立体音（双音道）
     private final static int audioFormat = AudioFormat.ENCODING_PCM_16BIT;//设置编码制式，表征编码精度。16bit表示量化时，每帧音频数据值用16位来表示。
     //这样产生的PCM数据的码流就是 sampleRateInHz*channelConfig*audioFormat 即 44100*2*16 bit/s
     private static byte[] pcmCache = null;

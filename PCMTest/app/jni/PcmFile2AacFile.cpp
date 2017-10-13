@@ -26,7 +26,7 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFil
 		return result;
 	}
 
-	int pcmCacheSize = pcmInputCacheSize*audioFormat / channelConfig / 8;
+	int pcmCacheSize = pcmInputCacheSize * audioFormat / 8;
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "pcmCacheSize-->%i", pcmCacheSize);
 
 	unsigned char * pcmCache = new unsigned char[pcmCacheSize];
@@ -41,13 +41,12 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFil
 	while (true){
 		infile.read((char*)pcmCache, pcmCacheSize);
 		int count = infile.gcount() / (audioFormat / 8);
-		nRet = faacEncEncode(hEncoder, (int32_t*)pcmCache, count, aacCache, aacOutPutCacheSize);
+		nRet = faacEncEncode(hEncoder, (int*)pcmCache, count, aacCache, aacOutPutCacheSize);
 		outfile.write((char*)aacCache, nRet);
 		__android_log_print(ANDROID_LOG_INFO, "yuyong", "pcm2aac-->%i-->%i", infile.gcount(), count);
 		if (infile.eof()){
 			break;
 		}
-		infile.seekg(infile.gcount(), ios::cur);
 	}
 
 	nRet = faacEncClose(hEncoder);

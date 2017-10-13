@@ -67,6 +67,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\PcmFile2AacFile.cpp" />
+    <ClCompile Include="..\..\PcmFile2AacFile_copy.cpp" />
     <ClCompile Include="..\..\test.cpp" />
   </ItemGroup>
   <ItemGroup>
