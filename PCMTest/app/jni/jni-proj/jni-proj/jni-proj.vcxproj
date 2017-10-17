@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\AV-study\20171012001\AV-study\PCMTest\faac-sdk\arm\include;E:\android-ndk-r10b\platforms\android-19\arch-arm\usr\include;E:\Program Files\Java\jdk1.7.0_79\include;$(IncludePath)</IncludePath>
+    <IncludePath>E:\AV-study\20171012001\AV-study\PCMTest\faac-sdk\arm\include;E:\android-ndk-r10b\platforms\android-19\arch-arm\usr\include;E:\Program Files\Java\jdk1.7.0_79\include;E:\AV-study\20171012001\AV-study\PCMTest\faad2-sdk\arm\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -66,12 +66,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\AacFile2PcmFile.cpp" />
+    <ClCompile Include="..\..\aac_test.cpp" />
     <ClCompile Include="..\..\PcmFile2AacFile.cpp" />
     <ClCompile Include="..\..\PcmFile2AacFile_copy.cpp" />
-    <ClCompile Include="..\..\test.cpp" />
+    <ClCompile Include="..\..\pcm_test.cpp" />
+    <ClCompile Include="..\..\tools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\com_thinking_pcmtest_AAC2PCMTools.h" />
     <ClInclude Include="..\..\com_thinking_pcmtest_PCM2AACTools.h" />
+    <ClInclude Include="..\..\tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

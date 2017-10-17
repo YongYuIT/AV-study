@@ -6,5 +6,5 @@ JNIEXPORT void JNICALL Java_com_thinking_pcmtest_PCM2AACTools_test
 (JNIEnv *, jclass){
 	faacEncHandle hEncoder;
 	faacEncConfigurationPtr pConfiguration;
-	__android_log_print(ANDROID_LOG_INFO, "yuyong", "success");
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "pcm test success");
 }

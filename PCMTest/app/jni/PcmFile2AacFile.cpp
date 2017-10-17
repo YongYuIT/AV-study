@@ -34,6 +34,7 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFil
 
 	faacEncConfigurationPtr pConfiguration = faacEncGetCurrentConfiguration(hEncoder);
 	pConfiguration->inputFormat = FAAC_INPUT_16BIT;
+	pConfiguration->outputFormat = 1;/* Bitstream output format (0 = Raw; 1 = ADTS) */
 
 	ifstream infile(pcm_path.c_str(), ifstream::binary);
 	ofstream outfile((pcm_path + ".aac").c_str(), ifstream::binary | ios::trunc);
@@ -43,11 +44,13 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFil
 		int count = infile.gcount() / (audioFormat / 8);
 		nRet = faacEncEncode(hEncoder, (int*)pcmCache, count, aacCache, aacOutPutCacheSize);
 		outfile.write((char*)aacCache, nRet);
-		__android_log_print(ANDROID_LOG_INFO, "yuyong", "pcm2aac-->%i-->%i", infile.gcount(), count);
+		__android_log_print(ANDROID_LOG_INFO, "yuyong", "pcm2aac-->%i-->%i-->%i", infile.gcount(), count, nRet);
 		if (infile.eof()){
 			break;
 		}
 	}
+
+	__android_log_print(ANDROID_LOG_INFO, "yuyong", "pcm2aac finish");
 
 	nRet = faacEncClose(hEncoder);
 	delete[] pcmCache;

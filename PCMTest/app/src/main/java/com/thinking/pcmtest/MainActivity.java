@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (view.getId() == R.id.btn_play) {
             PCMTool.play();
         } else if (view.getId() == R.id.btn_pcm2aac) {
-            PCMTool.doConvert();
+            PCMTool.doConvertPCM2AAC();
+        } else if (view.getId() == R.id.btn_aac2pcm) {
+            PCMTool.doConvertAAC2PCM();
         }
     }
 }
@@ -78,7 +80,7 @@ class PCMTool {
         });
     }
 
-    public static void doConvert() {
+    public static void doConvertPCM2AAC() {
         pool.submit(new Runnable() {
             @Override
             public void run() {
@@ -86,6 +88,17 @@ class PCMTool {
             }
         });
     }
+
+    public static void doConvertAAC2PCM() {
+        pool.submit(new Runnable() {
+            @Override
+            public void run() {
+                //Log.i("yuyong", AAC2PCMTools.AacFileToPcmFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm.aac"));
+                AAC2PCMTools.test();
+            }
+        });
+    }
+
 
     private static void getPCM() {
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm");
