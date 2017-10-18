@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PCMTest.iml" filepath="$PROJECT_DIR$/PCMTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/faac/faac.iml" filepath="$PROJECT_DIR$/faac/faac.iml" />
+      <module fileurl="file://$PROJECT_DIR$/faad/faad.iml" filepath="$PROJECT_DIR$/faad/faad.iml" />
     </modules>
   </component>
 </project>

@@ -42,7 +42,7 @@ JNIEXPORT void JNICALL Java_com_thinking_pcmtest_AAC2PCMTools_test
 	unsigned long samplerate;//采样率
 	unsigned char channels;//音道数
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "try read first frame data");
-	if (1 == 0){
+	if (1 == 1){
 		long res = NeAACDecInit(decoder, frame, frame_size, &samplerate, &channels);
 		if (res < 0){
 			__android_log_print(ANDROID_LOG_INFO, "yuyong", "init error");
