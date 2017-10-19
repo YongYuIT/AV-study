@@ -17,9 +17,7 @@ LOCAL_SRC_FILES:=       \
 LOCAL_MODULE:= libfaac
 LOCAL_C_INCLUDES :=         \
     $(LOCAL_PATH)           \
-    $(FAAC_TOP)/android     \
-    $(FAAC_TOP)/include     \
-    $(LOCAL_PATH)/kiss_fft
-LOCAL_CFLAGS:=      \
-    -DHAVE_CONFIG_H
+    $(FAAC_TOP)             \
+    $(FAAC_TOP)/include
+LOCAL_CFLAGS:= -DHAVE_CONFIG_H
 include $(BUILD_SHARED_LIBRARY)
