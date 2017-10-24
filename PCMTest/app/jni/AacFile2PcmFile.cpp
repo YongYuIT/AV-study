@@ -13,13 +13,13 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_AAC2PCMTools_AacFileToPcmFil
 	string aac_path = env->GetStringUTFChars(aac_file_path, 0);
 	//读取首帧数据-------------------------------------------------------------------------------
 	ifstream infile(aac_path.c_str(), ifstream::binary);
-	unsigned char first_frame[FRAME_MAX_LEN] = { 0 };
-	infile.read((char*)first_frame, FRAME_MAX_LEN);
+	unsigned char frame[FRAME_MAX_LEN] = { 0 };
+	infile.read((char*)frame, FRAME_MAX_LEN);
 	//获取首帧aac数据实际帧长-------------------------------------------------------------------------------
 	size_t frame_size = 0;
-	frame_size |= ((first_frame[3] & 0x03) << 11);     //high 2 bit
-	frame_size |= first_frame[4] << 3;                 //middle 8 bit
-	frame_size |= ((first_frame[5] & 0xe0) >> 5);      //low 3bit
+	frame_size |= ((frame[3] & 0x03) << 11);     //high 2 bit
+	frame_size |= frame[4] << 3;                 //middle 8 bit
+	frame_size |= ((frame[5] & 0xe0) >> 5);      //low 3bit
 	//检测解码器能力-------------------------------------------------------------------------------
 	unsigned long cap = NeAACDecGetCapabilities();
 	if (cap == NULL){
@@ -53,7 +53,7 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_AAC2PCMTools_AacFileToPcmFil
 	//初始化解码器-------------------------------------------------------------------------------
 	unsigned long samplerate;//采样率
 	unsigned char channels;//音道数
-	long res = NeAACDecInit(decoder, first_frame, frame_size, &samplerate, &channels);
+	long res = NeAACDecInit(decoder, frame, frame_size, &samplerate, &channels);
 	if (res < 0){
 		result = env->NewStringUTF("NeAACDecInit error");
 		return result;
@@ -61,6 +61,9 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_AAC2PCMTools_AacFileToPcmFil
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "first frame data-->%i-->%i", samplerate, channels);
 	//释放首帧数据-------------------------------------------------------------------------------
 	//循环读取PCM数据-------------------------------------------------------------------------------
+	ofstream outfile((aac_path + ".pcm").c_str(), ifstream::binary | ios::trunc);
+	unsigned char* pcm_data = NULL;
+	NeAACDecFrameInfo frame_info;
 	infile.seekg(0, ios::beg);
 	long index = 0;
 	while (true)
@@ -75,9 +78,26 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_AAC2PCMTools_AacFileToPcmFil
 			frame_size |= ((head[3] & 0x03) << 11);     //high 2 bit
 			frame_size |= head[4] << 3;                 //middle 8 bit
 			frame_size |= ((head[5] & 0xe0) >> 5);      //low 3bit
-			index += frame_size;
 			__android_log_print(ANDROID_LOG_INFO, "yuyong adts", "adts-->%i", frame_size);
-			//解码
+			//解码----------------------------------------------------------------------------start
+			infile.seekg(index, ios::beg);
+			memset(frame, 0, FRAME_MAX_LEN);
+			infile.read((char*)frame, frame_size);
+			pcm_data = (unsigned char*)NeAACDecDecode(decoder, &frame_info, frame, frame_size);
+			if (frame_info.error > 0)
+			{
+				__android_log_print(ANDROID_LOG_INFO, "yuyong", "decode failed");
+				result = env->NewStringUTF("decode failed");
+				return result;
+			}
+			else if (pcm_data && frame_info.samples > 0)
+			{
+				__android_log_print(ANDROID_LOG_INFO, "yuyong", "decode-->%i-->%i", frame_info.samples, frame_info.channels);
+				int length = frame_info.samples * frame_info.channels;
+				outfile.write((char*)pcm_data, length);
+			}
+			//解码----------------------------------------------------------------------------end
+			index += frame_size;
 		}
 		else{
 			index++;
@@ -86,9 +106,11 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_AAC2PCMTools_AacFileToPcmFil
 		infile.seekg(index, ios::beg);
 	}
 	//释放资源-------------------------------------------------------------------------------
+	outfile.close();
+	infile.close();
 	NeAACDecClose(decoder);
 	env->ReleaseStringUTFChars(aac_file_path, aac_path.c_str());
-	result = env->NewStringUTF("Success!");
+	result = env->NewStringUTF((aac_path + ".pcm").c_str());
 	return result;
 }
 
