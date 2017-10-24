@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\AV-study\20171012001\AV-study\PCMTest\faac-sdk\arm\include;E:\android-ndk-r10b\platforms\android-19\arch-arm\usr\include;E:\Program Files\Java\jdk1.7.0_79\include;E:\AV-study\20171012001\AV-study\PCMTest\faad2-sdk\arm\include;$(IncludePath)</IncludePath>
+    <IncludePath>E:\AV-study\20171024001\AV-study\PCMTest\faac\jni\include;E:\android-ndk-r10b\platforms\android-19\arch-arm\usr\include;E:\Program Files\Java\jdk1.7.0_79\include;E:\AV-study\20171024001\AV-study\PCMTest\faad\jni\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

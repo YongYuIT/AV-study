@@ -7,7 +7,7 @@ package com.thinking.pcmtest;
 public class AAC2PCMTools {
 
     static {
-        System.loadLibrary("faad");
+        System.loadLibrary("faad2");
         System.loadLibrary("com_thinking_faad");
     }
 

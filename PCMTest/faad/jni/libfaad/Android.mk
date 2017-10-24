@@ -46,4 +46,5 @@ LOCAL_C_INCLUDES :=         \
     $(FAAD2_TOP)/include
 LOCAL_CFLAGS:=      \
     -DHAVE_CONFIG_H
+LOCAL_LDLIBS +=  -llog -ldl -lz
 include $(BUILD_SHARED_LIBRARY)
