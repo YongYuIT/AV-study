@@ -93,8 +93,8 @@ class PCMTool {
         pool.submit(new Runnable() {
             @Override
             public void run() {
-                //Log.i("yuyong", AAC2PCMTools.AacFileToPcmFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm.aac"));
-                AAC2PCMTools.test();
+                Log.i("yuyong", AAC2PCMTools.AacFileToPcmFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm.aac"));
+                //AAC2PCMTools.test();
             }
         });
     }
