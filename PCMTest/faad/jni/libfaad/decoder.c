@@ -27,7 +27,6 @@
 **
 ** $Id: decoder.c,v 1.117 2009/02/05 00:51:03 menno Exp $
 **/
-#include<android\log.h>
 
 #include "common.h"
 #include "structs.h"
@@ -242,9 +241,6 @@ long NEAACDECAPI NeAACDecInit(NeAACDecHandle hpDecoder,
                               unsigned long *samplerate,
                               unsigned char *channels)
 {
-
-    __android_log_print(ANDROID_LOG_INFO, "yuyong", "going into NeAACDecInit source");
-
     uint32_t bits = 0;
     bitfile ld;
     adif_header adif;
@@ -289,6 +285,9 @@ long NEAACDECAPI NeAACDecInit(NeAACDecHandle hpDecoder,
         if ((buffer[0] == 'A') && (buffer[1] == 'D') &&
 			(buffer[2] == 'I') && (buffer[3] == 'F'))
 		{
+		    //yuyong
+		    return -1;
+
             hDecoder->adif_header_present = 1;
 
             get_adif_header(&adif, &ld);
