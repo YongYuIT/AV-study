@@ -39,12 +39,11 @@ LOCAL_SRC_FILES:=       \
         sbr_syntax.c    \
         sbr_tf_grid.c   \
         sbr_dec.c
-LOCAL_MODULE:= libfaad
+LOCAL_MODULE:= libfaad2
 LOCAL_C_INCLUDES :=         \
     $(LOCAL_PATH)           \
-    $(FAAD2_TOP)/android    \
-    $(FAAD2_TOP)/include    \
-    $(LOCAL_PATH)/codebook
+    $(FAAD2_TOP)            \
+    $(FAAD2_TOP)/include
 LOCAL_CFLAGS:=      \
     -DHAVE_CONFIG_H
 include $(BUILD_SHARED_LIBRARY)
