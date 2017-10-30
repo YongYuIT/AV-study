@@ -61,7 +61,7 @@ JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_AAC2PCMTools_AacFileToPcmFil
 	__android_log_print(ANDROID_LOG_INFO, "yuyong", "first frame data-->%i-->%i", samplerate, channels);
 	//释放首帧数据-------------------------------------------------------------------------------
 	//循环读取PCM数据-------------------------------------------------------------------------------
-	ofstream outfile((aac_path + ".pcm").c_str(), ifstream::binary | ios::trunc);
+	ofstream outfile((aac_path + ".pcm").c_str(), ofstream::binary | ios::trunc);
 	unsigned char* pcm_data = NULL;
 	NeAACDecFrameInfo frame_info;
 	infile.seekg(0, ios::beg);
