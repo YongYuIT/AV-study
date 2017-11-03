@@ -23,6 +23,14 @@ extern "C" {
 	JNIEXPORT jstring JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFile
 		(JNIEnv *, jclass, jstring);
 
+	/*
+	 * Class:     com_thinking_pcmtest_PCM2AACTools
+	 * Method:    PcmFileToAccFileOut
+	 * Signature: (Ljava/lang/String;Z)I
+	 */
+	JNIEXPORT jint JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFileOut
+		(JNIEnv *, jclass, jstring, jboolean);
+
 #ifdef __cplusplus
 }
 #endif

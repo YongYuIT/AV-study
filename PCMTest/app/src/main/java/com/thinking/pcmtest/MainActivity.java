@@ -23,6 +23,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            NetworkSender.getThiz().init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            NetworkSender.getThiz().destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void onClick(View view) {
@@ -34,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
             PCMTool.play();
         } else if (view.getId() == R.id.btn_pcm2aac) {
             PCMTool.doConvertPCM2AAC();
+        } else if (view.getId() == R.id.btn_pcm2aac_web) {
+            PCMTool.doConvertPCM2AACWeb();
+        } else if (view.getId() == R.id.btn_pcm2aac_web_stop) {
+            PCMTool.doConvertPCM2AACWebStop();
         } else if (view.getId() == R.id.btn_aac2pcm) {
             PCMTool.doConvertAAC2PCM();
         } else if (view.getId() == R.id.btn_play_aac) {
@@ -99,6 +118,29 @@ class PCMTool {
                 PCM2AACTools.PcmFileToAccFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm");
             }
         });
+    }
+
+    private static boolean isKeep = false;
+
+    public static void doConvertPCM2AACWeb() {
+        if (isKeep)
+            return;
+        pool.submit(new Runnable() {
+            @Override
+            public void run() {
+                int result = PCM2AACTools.PcmFileToAccFileOut(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm", true);
+                NetworkSender.getThiz().sendMsg(PCM2AACTools.getmCache(), result);
+                isKeep = true;
+                while (isKeep) {
+                    result = PCM2AACTools.PcmFileToAccFileOut(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm", false);
+                    NetworkSender.getThiz().sendMsg(PCM2AACTools.getmCache(), result);
+                }
+            }
+        });
+    }
+
+    public static void doConvertPCM2AACWebStop() {
+        isKeep = false;
     }
 
     public static void doConvertAAC2PCM() {
