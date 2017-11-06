@@ -1,5 +1,7 @@
 package com.thinking.pcmtest;
 
+import android.app.Activity;
+import android.content.ContextWrapper;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -7,10 +9,14 @@ import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ActionMenuView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +25,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
+
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1001) {
+                Toast.makeText(MainActivity.this, "encode success", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (view.getId() == R.id.btn_send_aac_web_stop) {
             PCMTool.doSendAACStop();
         } else if (view.getId() == R.id.btn_pcm2aac) {
-            PCMTool.doConvertPCM2AAC();
+            PCMTool.doConvertPCM2AAC(mHandler);
         } else if (view.getId() == R.id.btn_pcm2aac_web) {
             PCMTool.doConvertPCM2AACWeb();
         } else if (view.getId() == R.id.btn_pcm2aac_web_stop) {
@@ -117,11 +134,12 @@ class PCMTool {
     }
 
 
-    public static void doConvertPCM2AAC() {
+    public static void doConvertPCM2AAC(final Handler handler) {
         pool.submit(new Runnable() {
             @Override
             public void run() {
                 PCM2AACTools.PcmFileToAccFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm");
+                handler.sendEmptyMessage(1001);
             }
         });
     }
