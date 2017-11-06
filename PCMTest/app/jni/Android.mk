@@ -24,6 +24,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := com_thinking_faad
 LOCAL_SRC_FILES := aac_test.cpp \
     AacFile2PcmFile.cpp \
+    aac_web.cpp \
     tools.cpp
 LOCAL_C_INCLUDES += E:\AV-study\20171103001\AV-study\PCMTest\faad\jni\include
 LOCAL_LDLIBS +=  -llog -ldl -lz

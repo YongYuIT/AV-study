@@ -49,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
             PCMTool.stopRecord();
         } else if (view.getId() == R.id.btn_play) {
             PCMTool.play();
+        } else if (view.getId() == R.id.btn_send_aac_web) {
+            PCMTool.doSendAAC();
+        } else if (view.getId() == R.id.btn_send_aac_web_stop) {
+            PCMTool.doSendAACStop();
         } else if (view.getId() == R.id.btn_pcm2aac) {
             PCMTool.doConvertPCM2AAC();
         } else if (view.getId() == R.id.btn_pcm2aac_web) {
@@ -124,6 +128,23 @@ class PCMTool {
 
     private static boolean isKeep = false;
 
+
+    public static void doSendAAC() {
+        if (isKeep)
+            return;
+        pool.submit(new Runnable() {
+            @Override
+            public void run() {
+                isKeep = true;
+                while (isKeep) {
+                    int result = AAC2PCMTools.GetAACFrame(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm.aac");
+                    Log.i("yuyong_send_from_web", "send-->" + result);
+                    NetworkSender.getThiz().sendMsg(AAC2PCMTools.getmCache(), result);
+                }
+            }
+        });
+    }
+
     public static void doConvertPCM2AACWeb() {
         if (isKeep)
             return;
@@ -138,6 +159,13 @@ class PCMTool {
                 }
             }
         });
+    }
+
+
+    public static void doSendAACStop() {
+        AAC2PCMTools.GetAACFrameStop();
+        isKeep = false;
+
     }
 
     public static void doConvertPCM2AACWebStop() {

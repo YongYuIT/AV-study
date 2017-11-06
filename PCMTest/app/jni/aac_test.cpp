@@ -3,6 +3,10 @@
 #include<faad.h>
 #include"tools.h"
 
+#include<iostream>
+#include<fstream>
+using namespace std;
+
 static const  int BUFFER_MAX_LEN = 1024 * 1024;
 static const int FRAME_MAX_LEN = 1024 * 5;
 

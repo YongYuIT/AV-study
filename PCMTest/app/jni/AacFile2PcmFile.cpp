@@ -1,6 +1,10 @@
 #include"com_thinking_pcmtest_AAC2PCMTools.h"
 #include"tools.h"
 
+#include<iostream>
+#include<fstream>
+using namespace std;
+
 static const int FRAME_MAX_LEN = 1024 * 5;
 static const int ADTS_HEAD = 10;
 
