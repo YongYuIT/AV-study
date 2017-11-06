@@ -3,13 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PCMTest.iml" filepath="$PROJECT_DIR$/PCMTest.iml" />
-      <module fileurl="file://E:\AV-study\20171103001\AV-study\PCMTest\PCMTest.iml" filepath="E:\AV-study\20171103001\AV-study\PCMTest\PCMTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://E:\AV-study\20171103001\AV-study\PCMTest\app\app.iml" filepath="E:\AV-study\20171103001\AV-study\PCMTest\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/faac/faac.iml" filepath="$PROJECT_DIR$/faac/faac.iml" />
-      <module fileurl="file://E:\AV-study\20171103001\AV-study\PCMTest\faac\faac.iml" filepath="E:\AV-study\20171103001\AV-study\PCMTest\faac\faac.iml" />
       <module fileurl="file://$PROJECT_DIR$/faad/faad.iml" filepath="$PROJECT_DIR$/faad/faad.iml" />
-      <module fileurl="file://E:\AV-study\20171103001\AV-study\PCMTest\faad\faad.iml" filepath="E:\AV-study\20171103001\AV-study\PCMTest\faad\faad.iml" />
     </modules>
   </component>
 </project>

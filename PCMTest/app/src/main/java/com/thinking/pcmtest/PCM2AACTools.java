@@ -20,7 +20,9 @@ public class PCM2AACTools {
 
     private static byte[] mCache = new byte[1024];
 
-    public static native int PcmFileToAccFileOut(String pcm_file, boolean isFirstCall);
+    public static native int PcmFileToAccFileOut(String pcm_file);
+
+    public static native int PcmFileToAccFileOutStop();
 }
 
 //javah -d E:\AV-study\20171103001\AV-study\PCMTest\app\jni -classpath E:\AV-study\20171103001\AV-study\PCMTest\app\build\intermediates\classes\debug com.thinking.pcmtest.PCM2AACTools

@@ -26,10 +26,18 @@ extern "C" {
 	/*
 	 * Class:     com_thinking_pcmtest_PCM2AACTools
 	 * Method:    PcmFileToAccFileOut
-	 * Signature: (Ljava/lang/String;Z)I
+	 * Signature: (Ljava/lang/String;)I
 	 */
 	JNIEXPORT jint JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFileOut
-		(JNIEnv *, jclass, jstring, jboolean);
+		(JNIEnv *, jclass, jstring);
+
+	/*
+	 * Class:     com_thinking_pcmtest_PCM2AACTools
+	 * Method:    PcmFileToAccFileOutStop
+	 * Signature: ()I
+	 */
+	JNIEXPORT jint JNICALL Java_com_thinking_pcmtest_PCM2AACTools_PcmFileToAccFileOutStop
+		(JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

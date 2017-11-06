@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        ((TextView) findViewById(R.id.txt_ip)).setText(NetworkSender.getIP(this));
     }
 
     @Override
@@ -128,11 +130,10 @@ class PCMTool {
         pool.submit(new Runnable() {
             @Override
             public void run() {
-                int result = PCM2AACTools.PcmFileToAccFileOut(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm", true);
-                NetworkSender.getThiz().sendMsg(PCM2AACTools.getmCache(), result);
                 isKeep = true;
                 while (isKeep) {
-                    result = PCM2AACTools.PcmFileToAccFileOut(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm", false);
+                    int result = PCM2AACTools.PcmFileToAccFileOut(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm");
+                    Log.i("yuyong_send_from_web", "send-->" + result);
                     NetworkSender.getThiz().sendMsg(PCM2AACTools.getmCache(), result);
                 }
             }
@@ -140,7 +141,9 @@ class PCMTool {
     }
 
     public static void doConvertPCM2AACWebStop() {
+        PCM2AACTools.PcmFileToAccFileOutStop();
         isKeep = false;
+
     }
 
     public static void doConvertAAC2PCM() {

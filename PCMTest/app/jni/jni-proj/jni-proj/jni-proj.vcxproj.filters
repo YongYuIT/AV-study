@@ -33,6 +33,9 @@
     <ClCompile Include="..\..\tools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\pcm2aac_web.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\com_thinking_pcmtest_PCM2AACTools.h">

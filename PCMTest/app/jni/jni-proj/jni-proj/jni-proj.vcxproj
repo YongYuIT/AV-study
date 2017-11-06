@@ -68,6 +68,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\AacFile2PcmFile.cpp" />
     <ClCompile Include="..\..\aac_test.cpp" />
+    <ClCompile Include="..\..\pcm2aac_web.cpp" />
     <ClCompile Include="..\..\PcmFile2AacFile.cpp" />
     <ClCompile Include="..\..\PcmFile2AacFile_copy.cpp" />
     <ClCompile Include="..\..\pcm_test.cpp" />
