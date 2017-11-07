@@ -1,7 +1,5 @@
 package com.thinking.pcmtest;
 
-import android.app.Activity;
-import android.content.ContextWrapper;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -14,7 +12,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ActionMenuView;
 import android.widget.TextView;
 import android.widget.Toast;
 
