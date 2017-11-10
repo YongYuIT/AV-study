@@ -15,6 +15,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thinking.pcmtest.network.NetworkSender;
+import com.thinking.pcmtest.network.Sender;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,23 +37,25 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private Sender mSender = NetworkSender.getThiz();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
-            NetworkSender.getThiz().init();
+            mSender.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ((TextView) findViewById(R.id.txt_ip)).setText(NetworkSender.getIP(this));
+        ((TextView) findViewById(R.id.txt_ip)).setText(mSender.getIP(this));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         try {
-            NetworkSender.getThiz().destroy();
+            mSender.destroy();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,7 +147,7 @@ class PCMTool {
     }
 
     private static boolean isKeep = false;
-
+    private static Sender mSender = NetworkSender.getThiz();
 
     public static void doSendAAC() {
         if (isKeep)
@@ -154,7 +159,7 @@ class PCMTool {
                 while (isKeep) {
                     int result = AAC2PCMTools.GetAACFrame(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm.aac");
                     Log.i("yuyong_send_from_web", "send-->" + result);
-                    NetworkSender.getThiz().sendMsg(AAC2PCMTools.getmCache(), result);
+                    mSender.sendMsg(AAC2PCMTools.getmCache(), result);
                 }
             }
         });
@@ -170,7 +175,7 @@ class PCMTool {
                 while (isKeep) {
                     int result = PCM2AACTools.PcmFileToAccFileOut(Environment.getExternalStorageDirectory().getAbsolutePath() + "//test_pcm.pcm");
                     Log.i("yuyong_send_from_web", "send-->" + result);
-                    NetworkSender.getThiz().sendMsg(PCM2AACTools.getmCache(), result);
+                    mSender.sendMsg(PCM2AACTools.getmCache(), result);
                 }
             }
         });

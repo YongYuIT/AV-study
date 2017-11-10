@@ -1,4 +1,4 @@
-package com.thinking.pcmtest;
+package com.thinking.pcmtest.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
  * Created by Yu Yong on 2017/10/25.
  */
 
-public class NetworkSender {
+public class NetworkSender extends Sender {
     private static NetworkSender thiz;
     private static ExecutorService pool = Executors.newSingleThreadExecutor();
 
@@ -39,6 +39,7 @@ public class NetworkSender {
     private List<Socket> mClients = new ArrayList<>();
     private Map<Socket, DataOutputStream> mClientOut = new HashMap<>();
 
+    @Override
     public void init() throws Exception {
         if (isKeepAccp)
             return;
@@ -62,7 +63,7 @@ public class NetworkSender {
 
     }
 
-
+    @Override
     public void sendMsg(byte[] data, int size) {
         String testLog = "";
         for (int i = 0; i < 20; i++) {
@@ -78,6 +79,7 @@ public class NetworkSender {
         }
     }
 
+    @Override
     public void destroy() {
         isKeepAccp = false;
         for (int i = 0; i < mClients.size(); i++) {
@@ -90,7 +92,8 @@ public class NetworkSender {
         }
     }
 
-    public static String getIP(Context ctx) {
+    @Override
+    public String getIP(Context ctx) {
         NetworkInfo info = ((ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         if (info.getType() == ConnectivityManager.TYPE_WIFI) {//当前使用无线网络
             WifiManager wifiManager = (WifiManager) ctx.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
