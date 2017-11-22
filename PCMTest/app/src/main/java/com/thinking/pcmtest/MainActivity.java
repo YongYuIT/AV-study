@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.thinking.pcmtest.network.NetworkSender;
+import com.thinking.pcmtest.network.MultiNetworkSender;
 import com.thinking.pcmtest.network.Sender;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private Sender mSender = NetworkSender.getThiz();
+    private Sender mSender = MultiNetworkSender.getThiz();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +147,7 @@ class PCMTool {
     }
 
     private static boolean isKeep = false;
-    private static Sender mSender = NetworkSender.getThiz();
+    private static Sender mSender = MultiNetworkSender.getThiz();
 
     public static void doSendAAC() {
         if (isKeep)
